@@ -33,6 +33,11 @@ $searchWords = [
     // '±',//gehad
     // '知',//gehad
     // '´',//gehad
+    '’',
+    '‘',
+    '“',
+    '”',
+    '…',
     // '—',//gehad
     // 'I"m',//gehad
     // 'they"re',//gehad

@@ -35,8 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($movie->editMovie()) {
         // Build query string for redirect
+        $anchor = isset($_GET['anchor']) ? '#' . $_GET['anchor'] : '';
         $queryString = http_build_query($filters);
-        header('Location: /index.php' . ($queryString ? '?' . $queryString : ''));
+        header('Location: /index.php' . ($queryString ? '?' . $queryString : '') . $anchor);
         exit;
     }
 }
@@ -52,16 +53,16 @@ if (!$result) {
 $franchises = $movie->getFranchises();
 
 // Get filter parameters from URL
-$filters = [
-    'franchise' => $_GET['franchise'] ?? '',
-    'sort' => $_GET['sort'] ?? '',
-    'search' => $_GET['search'] ?? '',
-    'page' => $_GET['page'] ?? ''
-];
+$filters = [];
+if (!empty($_GET['franchise'])) $filters['franchise'] = $_GET['franchise'];
+if (!empty($_GET['sort'])) $filters['sort'] = $_GET['sort'];
+if (!empty($_GET['search'])) $filters['search'] = $_GET['search'];
+if (!empty($_GET['page'])) $filters['page'] = $_GET['page'];
 
 // Build the query string for the back link
-$queryString = http_build_query($filters);
-$cancelLink = '/index.php' . ($queryString ? '?' . $queryString : '');
+$anchor = isset($_GET['anchor']) ? '#' . $_GET['anchor'] : '';
+$queryString = !empty($filters) ? http_build_query($filters) : '';
+$cancelLink = '/index.php' . ($queryString ? '?' . $queryString : '') . $anchor;
 
 $pagetitle = 'Edit ' . htmlspecialchars($movie->title) . ' - DeMoLi';
 include '../includes/header.php';

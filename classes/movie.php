@@ -12,6 +12,7 @@ class Movie {
     public $rating;
     public $path;
     public $franchiseId;
+    public $timeWatched;
 
     public function __construct($db) {
         if ($db instanceof PDO) {
@@ -32,7 +33,7 @@ class Movie {
 
     public function getMovie($id) {
         try {
-            $query = "SELECT MovieID, Title, OriginalTitle, Image, Year, Length, Rating, Path, FranchiseID 
+            $query = "SELECT MovieID, Title, OriginalTitle, Image, Year, Length, Rating, Path, FranchiseID, TimeWatched 
                      FROM " . $this->table_name . " 
                      WHERE MovieID = ?";
             
@@ -51,6 +52,7 @@ class Movie {
                 $this->rating = $row['Rating'];
                 $this->path = $row['Path'];
                 $this->franchiseId = $row['FranchiseID'];
+                $this->timeWatched = $row['TimeWatched'];
                 return true;
             }
             return false;
@@ -94,7 +96,7 @@ class Movie {
             // Determine ORDER BY clause based on sort option
             $orderBy = $this->getSortClause($filters['sort'] ?? null);
 
-            $query = "SELECT MovieID, Title, OriginalTitle, Image, Year, Length, Rating, Path 
+            $query = "SELECT MovieID, Title, OriginalTitle, Image, Year, Length, Rating, Path, TimeWatched 
                      FROM Movie 
                      $whereClause
                      $orderBy 
@@ -119,6 +121,7 @@ class Movie {
                 $movie->length = $row['Length'];
                 $movie->rating = $row['Rating'];
                 $movie->path = $row['Path'];
+                $movie->timeWatched = $row['TimeWatched'];
                 $movies[] = $movie;
             }
             
@@ -250,6 +253,24 @@ class Movie {
             : $mediaDrive . ltrim($this->path, '/');
         $srtPath = preg_replace('/\.mp4$/', '.srt', $fullPath);
         return file_exists($srtPath);
+    }
+
+    public function updateTimeWatched($seconds) {
+        try {
+            $query = "UPDATE " . $this->table_name . " 
+                     SET TimeWatched = ? 
+                     WHERE MovieID = ?";
+            
+            $stmt = $this->conn->prepare($query);
+            $success = $stmt->execute([$seconds, $this->id]);
+            
+            if ($success) {
+                $this->timeWatched = $seconds;
+            }
+            return $success;
+        } catch(PDOException $e) {
+            return false;
+        }
     }
 }
 ?>

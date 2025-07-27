@@ -22,6 +22,7 @@ $movies = $result['movies'];
 $totalPages = $result['pages'];
 
 include 'includes/header.php';
+if (getenv('DEVMODE')):
 ?>
 <div class="add-movie-container">
     <a href="pages/addmovie.php" class="add-movie-button">
@@ -35,6 +36,7 @@ include 'includes/header.php';
         Check SRT
     </a>
 </div>
+<?php endif; ?>
 <div class="total-movies">
     <?php $totalCount = $movie->getTotalMovies(); ?>
     <div>Total Movies: <?= number_format($totalCount); ?></div>
@@ -101,7 +103,7 @@ include 'includes/header.php';
 </div>
 <div class="movie-list">
     <?php foreach($movies as $movie): ?>
-        <div class="movie-item">
+        <div class="movie-item" id="<?= htmlspecialchars($movie->id); ?>">
             <img loading="lazy" 
                 src="https://m.media-amazon.com/images/M/<?= htmlspecialchars($movie->image); ?>" 
                 alt="<?= htmlspecialchars($movie->title); ?>"
@@ -119,9 +121,13 @@ include 'includes/header.php';
                     // Build query string with current filters
                     $queryParams = $_GET;
                     $queryParams['id'] = $movie->id;
+                    $queryParams['anchor'] = $movie->id;
                     $filterQuery = http_build_query($queryParams);
+                    if (getenv('DEVMODE')):
                     ?>
-                    <a href="pages/editmovie.php?<?= htmlspecialchars($filterQuery); ?>" class="edit-button">Edit</a>                            <?php
+                    <a href="pages/editmovie.php?<?= htmlspecialchars($filterQuery); ?>" class="edit-button">Edit</a>
+                    <?php
+                    endif;
                     $moviePath = $movie->path;
                     if (!empty($moviePath)) {
                         $mediaDrive = Database::getMediaDrive();
@@ -129,11 +135,20 @@ include 'includes/header.php';
                             $moviePath = $mediaDrive . ltrim($moviePath, '/');
                         }
                         if (file_exists($moviePath)): 
+                            if ($movie->timeWatched > 0):
                     ?>
-                        <a href="pages/watch.php?<?= htmlspecialchars($filterQuery); ?>" class="view-button">View</a>
-                        <?php if (!$movie->hasSubtitles()): ?>
+                            <div class="view-options">
+                                <a href="pages/watch.php?<?= htmlspecialchars($filterQuery); ?>&start=beginning" class="view-button">Start from beginning</a>
+                                <a href="pages/watch.php?<?= htmlspecialchars($filterQuery); ?>" class="view-button continue">Continue (<?= gmdate("H:i:s", $movie->timeWatched); ?>)</a>
+                            </div>
+                    <?php else: ?>
+                            <a href="pages/watch.php?<?= htmlspecialchars($filterQuery); ?>" class="view-button">View</a>
+                    <?php
+                            endif;
+                            if (!$movie->hasSubtitles()): 
+                    ?>
                             <span title="No subtitles available" class="subtitle-warning"></span>
-                        <?php endif; ?>
+                    <?php endif; ?>
                     <?php else: ?>
                         <span title="Movie file not found" class="movie-warning"></span>
                     <?php
