@@ -6,168 +6,130 @@ require_once '../classes/movie.php';
 
 // Array of words to search for in SRT files
 $searchWords = [
-    'subtitle',//gehad
-    // 'torrent',//gehad
-    // 'yts',//gehad
-    // 'mkv',//gehad
-    // '720p',//gehad
-    // '1080p',//gehad
-    // '2160p',//gehad
-    // 'www.',//gehad
-    // '.com',//gehad
-    // '.nl',//gehad
-    // '.co.uk',//gehad
-    // '.org',//gehad
-    // 'yify',//gehad
-    // 'srt',//gehad
-    // 'SDH',//gehad
-    // 'mp4',//gehad
-    // '©',//gehad
-    // '@',//gehad
-    // 'Ã',//gehad
-    // '{',//gehad
-    // 'an8',//gehad
-    // '/fad',//gehad
-    // '°',//gehad
-    // '¡',//gehad
-    // '±',//gehad
-    // '知',//gehad
-    // '´',//gehad
-    '’',
-    '‘',
-    '“',
-    '”',
-    '…',
-    // '—',//gehad
-    // 'I"m',//gehad
-    // 'they"re',//gehad
-    // 'it"s',//gehad
-    // 'i"ll',//gehad
-    // 'i"ve',//gehad
-    // 'can"t',//gehad
-    // 'you"re',//gehad
-    // 'don"t',//gehad
-    // 'we"re',//gehad
-    // 'how"s',//gehad
-    // 'he"s',//gehad
-    // 'she"s',//gehad
-    // 'that"s',//gehad
-    // 'what"s',//gehad
-    // 'who"s',//gehad
-    // 'there"s',//gehad
-    // 'where"s',//gehad
-    // 'when"s',//gehad
-    // 'why"s',//gehad
-    // 'you"ll',//gehad
-    // 'you"ve',//gehad
-    // 'doesn"t',//gehad
-    // 'wasn"t',//gehad
-    // 'weren"t',//gehad
-    // 'hasn"t',//gehad
-    // 'haven"t',//gehad
-    // 'hadn"t',//gehad
-    // 'won"t',//gehad
-
-    // 'Ieave',
-    // 'foIks',
-    // "couIdn't",
-    // 'rightfuIIy',
-    // 'pIease',
-    // "shouId've",
-    // 'scaIIop',
-    // 'settIe',
-    // 'goofbaII',
-    // ' aIso ',
-    // "l'm",
-    // "l've",
-    // " lt ",
-    // " lf ",
+    // 'subtitle',
+    // 'torrent',
+    // 'yts',
+    // 'mkv',
+    // '720p',
+    // '1080p',
+    // '2160p',
+    // 'www.',
+    // '.com',
+    // '.nl',
+    // '.co.uk',
+    // '.org',
+    // 'yify',
+    // 'srt',
+    // 'SDH',
+    // 'mp4',
+    // '©',
+    // '@',
+    // 'Ã',
+    // '{',
+    // 'an8',
+    // '/fad',
+    // '’',
+    // '‘',
+    // '“',
+    // '”',
+    // '€',
+    // '™',
+    // '…',
+    // 'œ',
+    // 'ª',
+    // '♪',
+    // '—',
+    // 'subcaptions',
+    // '</font>',
+    // '</b>',
+    // 'Sync &',
+    // 'Sync and',
+    // 'subscene',
+    // 'ENGLISH - US',
+    // 'English - US - SDH',
+    // 'English ESL',
+    // 'BLURAY',
+    // 'it was a pleasure sharing',
+    // 'explosiveskull',
+    // 'GoldenBeard',
+    // 'Fidel33',
+    // 'subs by',
+    // 'subbed by',
+    // 'subtitles by',
+    // 'synchronization by',
+    // 'synchronized by',
+    // 'synced by',
+    // 'ripped by',
+    // 'encoded by',
+    // 'Subs by',
+    // 'sync by',
+    // 'sub by',
+    // 'ß',
+    // '£',
+    // '¿',
+    // 'ø',
+    // 'á',
+    // 'à',
+    // 'ä',
+    // 'â',
+    // 'ã',
+    // 'å',
+    // 'Ā',
+    // 'ā',
+    // 'đ',
+    // 'é',
+    // 'è',
+    // 'ê',
+    // 'ë',
+    // 'ē',
+    // 'í',
+    // 'ì',
+    // 'î',
+    // 'ï',
+    // 'ǐ',
+    // 'ó',
+    // 'ò',
+    // 'ô',
+    // 'ö',
+    // 'ō',
+    // 'ú',
+    // 'ù',
+    // 'û',
+    // 'ü',
+    // 'ū',
+    // 'ç',
+    // 'č',
+    // 'ñ',
+    // 'š',
+    // 'ž',
+    // 'ł',
+    // '�',
     // "lt'll",
-    // " lt's ",
-    // "l'll",
-    // " aII ",
-    // "whoIe",
-    // "feII",
-
-    // 'totaIIy',
-    // 'reaIIy',
-    // ' caII',
-    // ' weII',
-    // ' biII',
-    // 'miIIion',
-    // 'kiII',
-    // 'stiII',
-    // 'uItimate',
-    // ' Iet',
-    // 'Iike',
-    // 'Iive',
-    // 'Iaugh',
-    // ' Iong',
-    // 'Iist',
-    // 'IocaI',
-    // 'Iand',
-    // 'Ieft',
-    // ' Iast',
-    // 'Iine',
-    // 'Iarge',
-    // 'Iook',
-    // 'Iove',
-    // 'Iose',
-    // 'Iight',
-    // ' Iow',
-    // 'Iogic',
-    // 'Ioad',
-    // 'Iuck',
-    // 'Iearned',
-    // ' Iate',
-    // 'Iacked',
-    // 'IoseIy',
-    // 'faII',
-    // 'caIIed',
-    // 'caIIing',
-    // 'wiII',
-    // 'tlme',
-    // 'tlck',
-    // " l'd",
-    // " l'dve",
-    // " l'd've",
-    // " l don't",
-    // ' l do',
-    // ' l can',
-    // ' l guess',
-    // ' l know',
-    // ' l hope',
-    // ' l wish',
-
-    // '</font>',//gehad
-    // '</b>',//gehad
-    // 'Sync &',//gehad
-    // 'Sync and',//gehad
-    // 'subscene',//gehad
-    // 'ENGLISH - US',//gehad
-    // 'English - US - SDH',//gehad
-    // 'English ESL',//gehad
-    // 'BLURAY',//gehad
-    // 'it was a pleasure sharing',//gehad
-    // 'thanks for watching',//gehad
-    // 'thank you for watching',//gehad
-    // 'explosiveskull',//gehad
-    // 'GoldenBeard',//gehad
-    // 'Fidel33',//gehad
-    // 'subs by',//gehad
-    // 'subbed by',//gehad
-    // 'subtitles by',//gehad
-    // 'synchronization by',//gehad
-    // 'synchronized by',//gehad
-    // 'synced by',//gehad
-    // 'ripped by',//gehad
-    // 'encoded by',//gehad
-    // 'IMPROVED BY',//gehad
-    // 'Direct Download',//gehad
-    // 'Movies and TV Shows',//gehad
-    // 'Subs by',//gehad
-    // 'sync by',//gehad
-    // 'sub by',//gehad
+    // "Lt's",
+    // '. . .',
+    // 'Α',
+    // 'Β',
+    // 'Ε',
+    // 'Η',
+    // 'Ι',
+    // 'Κ',
+    // 'Μ',
+    // 'Ν',
+    // 'Ο',
+    // 'Ρ',
+    // 'Τ',
+    // 'Χ',
+    // 'Υ',
+    // 'Ζ',
+    // 'α',
+    // 'ε',
+    // 'ι',
+    // 'κ',
+    // 'ν',
+    // 'ο',
+    // 'ρ',
+    // 'υ',
+    // 'χ'
 ];
 
 // Initialize database connection
@@ -183,12 +145,12 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $results = [];
 
 // Process each movie
+$mediaDrive = Database::getMediaDrive();
 foreach ($movies as $movie) {
     if (empty($movie['Path'])) continue;
 
     // Get full path to movie file
     $moviePath = $movie['Path'];
-    $mediaDrive = Database::getMediaDrive();
     if (!str_starts_with($moviePath, $mediaDrive)) {
         $moviePath = $mediaDrive . ltrim($moviePath, '/');
     }
@@ -248,10 +210,10 @@ include '../includes/header.php';
     <?php else: ?>
         <?php $srtcount = 1; ?>
         <?php foreach ($results as $title => $data): ?>
-            <?php if ($srtcount > 275) break; ?>
+            <?php if ($srtcount > 100) break; ?>
             <div class="result-item">
                 <h3><?= $srtcount . ' - ' . htmlspecialchars($title) ?></h3>
-                <div class="movie-path"><?= htmlspecialchars($data['path']) ?></div>
+                <div class="movie-path"><?= $mediaDrive . htmlspecialchars(dirname($data['path'])) ?></div>
                 <div class="words-found">
                     Words found: <?= htmlspecialchars(implode(', ', $data['words'])) ?>
                 </div>

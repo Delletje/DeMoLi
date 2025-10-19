@@ -9,11 +9,11 @@ $itemsPerPage = 100;
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 
 // Get filter parameters
-$filters = [
-    'franchise' => $_GET['franchise'] ?? '',
-    'sort' => $_GET['sort'] ?? '',
-    'search' => $_GET['search'] ?? ''
-];
+$filters = [];
+if (!empty($_GET['franchise'])) $filters['franchise'] = $_GET['franchise'];
+if (!empty($_GET['sort'])) {$filters['sort'] = $_GET['sort'];} else {$filters['sort'] = '';}
+if (!empty($_GET['search'])) $filters['search'] = $_GET['search'];
+if (!empty($_GET['page'])) $filters['page'] = $_GET['page'];
 
 $movie = new Movie(new Database());
 $franchises = $movie->getFranchises();
@@ -45,19 +45,19 @@ if (getenv('DEVMODE')):
     <?php endif; ?>
 </div>
 <div class="filter-container">
-    <form action="" method="GET" class="filter-form">
+    <form method="GET" class="filter-form">
         <div class="filter-row">
             <div class="filter-group">
                 <label for="franchise">Franchise:</label>
                 <select name="franchise" id="franchise">
-                    <option value="">All Franchises</option>
+                    <option value="">Default</option>
                     <?php 
                     // First show Standalone (ID 1)
                     foreach ($franchises as $key => $franchise):
                         if ($franchise['FranchiseID'] == 1):
                     ?>
                         <option value="<?= htmlspecialchars($franchise['FranchiseID']); ?>"
-                                <?= $filters['franchise'] == $franchise['FranchiseID'] ? 'selected' : ''; ?>>
+                                <?= !empty($filters['franchise']) && $filters['franchise'] == $franchise['FranchiseID'] ? 'selected' : ''; ?>>
                             <?= htmlspecialchars($franchise['Name']); ?>
                         </option>
                     <?php
@@ -69,7 +69,7 @@ if (getenv('DEVMODE')):
                     foreach ($franchises as $franchise):
                     ?>
                         <option value="<?= htmlspecialchars($franchise['FranchiseID']); ?>"
-                                <?= $filters['franchise'] == $franchise['FranchiseID'] ? 'selected' : ''; ?>>
+                                <?= !empty($filters['franchise']) && $filters['franchise'] == $franchise['FranchiseID'] ? 'selected' : ''; ?>>
                             <?= htmlspecialchars($franchise['Name']); ?>
                         </option>
                     <?php
@@ -94,7 +94,7 @@ if (getenv('DEVMODE')):
             <div class="filter-group">
                 <label for="search">Search:</label>
                 <div class="search-container">
-                    <input type="text" name="search" id="search" placeholder="Search titles or year..." value="<?= htmlspecialchars($filters['search']); ?>">
+                    <input type="text" name="search" id="search" placeholder="Search titles or year..." value="<?= !empty($filters['search']) ? htmlspecialchars($filters['search']) : ''; ?>">
                     <button type="submit" class="search-button">Search</button>
                 </div>
             </div>
@@ -119,9 +119,8 @@ if (getenv('DEVMODE')):
                     <a href="https://www.imdb.com/title/<?= htmlspecialchars($movie->id); ?>" class="imdb-link" target="_blank">View on IMDB</a>
                     <?php
                     // Build query string with current filters
-                    $queryParams = $_GET;
+                    $queryParams = $filters;
                     $queryParams['id'] = $movie->id;
-                    $queryParams['anchor'] = $movie->id;
                     $filterQuery = http_build_query($queryParams);
                     if (getenv('DEVMODE')):
                     ?>
@@ -143,10 +142,10 @@ if (getenv('DEVMODE')):
                             </div>
                     <?php else: ?>
                             <a href="pages/watch.php?<?= htmlspecialchars($filterQuery); ?>" class="view-button">View</a>
-                    <?php
+                        <?php
                             endif;
-                            if (!$movie->hasSubtitles()): 
-                    ?>
+                            if (!$movie->hasSubtitles() && getenv('DEVMODE')): 
+                        ?>
                             <span title="No subtitles available" class="subtitle-warning"></span>
                     <?php endif; ?>
                     <?php else: ?>

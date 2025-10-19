@@ -48,9 +48,8 @@ if (!empty($_GET['search'])) $filters['search'] = $_GET['search'];
 if (!empty($_GET['page'])) $filters['page'] = $_GET['page'];
 
 // Build the query string for the back link
-$anchor = isset($_GET['anchor']) ? '#' . $_GET['anchor'] : '';
 $queryString = !empty($filters) ? http_build_query($filters) : '';
-$backLink = '/index.php' . ($queryString ? '?' . $queryString : '') . $anchor;
+$backLink = '/index.php' . ($queryString ? '?' . $queryString : '') . '#' . $movieId;
 
 $pagetitle = htmlspecialchars($movie->title) . ' - DeMoLi';
 include '../includes/header.php';
